@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import { ReactNode, useEffect, useRef, useState } from 'react';
-
 import { useOutsideAlerter } from '../lib/hooks/useOutsideAlerter';
 
 export interface DropdownItem {
 	text: string;
 	href?: string;
-	tw?: string;
+	cb?: () => void;
+	tw?: string; // the style of the items
 }
 
 export interface DropdownProps {
@@ -14,8 +14,8 @@ export interface DropdownProps {
 	children: ReactNode;
 	items: DropdownItem[];
 	newSpace?: boolean;
-	tw?: string;
-	hovered?: boolean;
+	tw?: string; // the style of the whole list of items
+	hovered?: boolean; // if true, the dropdown is active on hover
 }
 
 const Dropdown = ({
@@ -52,14 +52,14 @@ const Dropdown = ({
 
 	return (
 		<div
-			className={`${
+			className={`relative z-10 ${
 				direction === 'right'
 					? 'flex flex-row'
 					: direction === 'left'
-						? 'flex flex-row-reverse'
-						: direction === 'bottom'
-							? 'relative inline-block'
-							: ''
+					? 'flex flex-row-reverse'
+					: direction === 'bottom'
+					? 'relative inline-block'
+					: ''
 			}`}
 			ref={dropdownRef}
 		>
@@ -77,6 +77,7 @@ const Dropdown = ({
 								text={item.text}
 								key={i}
 								tw={item.tw}
+								cb={item.cb}
 							/>
 						);
 					})}
@@ -86,21 +87,23 @@ const Dropdown = ({
 	);
 };
 
-const DropdownItem = ({ text, href, tw }: DropdownItem): JSX.Element => {
+const DropdownItem = ({ text, href, tw, cb }: DropdownItem): JSX.Element => {
 	return (
 		<>
 			<p
-				className={`${tw} py-2 w-28 flex flex-wrap pl-2 border-gray-200 border-b-2 bg-white text-black`}
+				className={`${tw} py-2 w-auto flex flex-wrap pl-2 border-gray-200 border-b-2 bg-white text-black`}
 				onClick={
-					href !== undefined
+					href
 						? (): string => (window.location.href = href)
+						: typeof cb !== 'undefined'
+						? (): void => cb()
 						: (): boolean => {
-							return false;
-						}
+								return false;
+						  }
 				}
 			>
-				{href !== undefined && <Link href={href!}>{text}</Link>}
-				{href === undefined && <p>{text}</p>}
+				{typeof href !== 'undefined' && <Link href={href!}>{text}</Link>}
+				{typeof href === 'undefined' && <p>{text}</p>}
 			</p>
 		</>
 	);
