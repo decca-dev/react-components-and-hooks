@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { useOutsideAlerter } from '../lib/hooks/useOutsideAlerter';
 
-export interface DropdownItem {
+export interface IDropdownItem {
 	text: string;
 	href?: string;
 	cb?: () => void;
@@ -12,7 +12,7 @@ export interface DropdownItem {
 export interface DropdownProps {
 	direction: 'right' | 'left' | 'bottom';
 	children: ReactNode;
-	items: DropdownItem[];
+	items: IDropdownItem[];
 	newSpace?: boolean;
 	tw?: string; // the style of the whole list of items
 	hovered?: boolean; // if true, the dropdown is active on hover
@@ -52,23 +52,19 @@ const Dropdown = ({
 
 	return (
 		<div
-			className={`relative z-10 ${
-				direction === 'right'
-					? 'flex flex-row'
-					: direction === 'left'
+			className={`relative z-10 ${direction === 'right'
+				? 'flex flex-row'
+				: direction === 'left'
 					? 'flex flex-row-reverse'
 					: direction === 'bottom'
-					? 'relative inline-block'
-					: ''
-			}`}
+						? 'relative inline-block'
+						: ''}`}
 			ref={dropdownRef}
 		>
 			<button onClick={toggleVisibility}>{children}</button>
 			{isVisible && (
 				<div
-					className={`${
-						newSpace ? 'relative' : 'absolute'
-					} ${tw} flex flex-col rounded-md drop-shadow-lg child-xl cursor-pointer`}
+					className={`${newSpace ? 'relative' : 'absolute'} ${tw} flex flex-col rounded-md drop-shadow-lg child-xl cursor-pointer`}
 				>
 					{items.map((item, i) => {
 						return (
@@ -87,24 +83,24 @@ const Dropdown = ({
 	);
 };
 
-const DropdownItem = ({ text, href, tw, cb }: DropdownItem): JSX.Element => {
+const DropdownItem = ({ text, href, tw, cb }: IDropdownItem): JSX.Element => {
 	return (
 		<>
-			<p
+			<div
 				className={`${tw} py-2 w-auto flex flex-wrap pl-2 border-gray-200 border-b-2 bg-white text-black`}
 				onClick={
 					href
 						? (): string => (window.location.href = href)
 						: typeof cb !== 'undefined'
-						? (): void => cb()
-						: (): boolean => {
+							? (): void => cb()
+							: (): boolean => {
 								return false;
-						  }
+							}
 				}
 			>
 				{typeof href !== 'undefined' && <Link href={href!}>{text}</Link>}
 				{typeof href === 'undefined' && <p>{text}</p>}
-			</p>
+			</div>
 		</>
 	);
 };
