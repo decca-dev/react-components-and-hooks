@@ -1,4 +1,4 @@
-import { useEffect, SetStateAction, Dispatch } from 'react';
+import { useEffect, useRef, SetStateAction, Dispatch } from 'react';
 import Image from 'next/image';
 
 export interface ToastOptions {
@@ -10,26 +10,26 @@ export interface ToastOptions {
 export type ToastType = 'error' | 'success' | 'info' | 'loading';
 
 const Toast = ({ title, description, type }: ToastOptions): JSX.Element => {
+	const toastRef = useRef<HTMLDivElement>(undefined!);
 	useEffect(() => {
-		const toast = document.querySelector('#toast') as HTMLDivElement;
 		setTimeout(() => {
-			toast.classList.remove('show');
+			toastRef.current.classList.remove('show');
 		}, 2805);
 	}, []);
 
 	return (
-		<div className="flex flex-row items-center justify-center">
+		<div className='flex flex-row items-center justify-center'>
 			<div
-				id="toast"
+				ref={toastRef}
 				className={'toast show toast-' + type}
 			>
-				<h6 className="inline-block align-middle">
-					<div className="inline-block align-middle mr-2">
+				<h6 className='font-bold inline-block align-middle'>
+					<div className='inline-block align-middle mr-2'>
 						<Image
 							src={'/assets/icons/' + type + '.svg'}
-							alt="icon"
-							width="25"
-							height="25"
+							alt='icon'
+							width='25'
+							height='25'
 							className={type === 'loading' ? 'animate-spin' : ''}
 						/>
 					</div>
