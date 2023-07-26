@@ -1,8 +1,7 @@
-import { useEffect, MutableRefObject } from 'react';
+import { useEffect, RefObject } from 'react';
 
 export const useOutsideAlerter = (
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	ref: MutableRefObject<any>,
+	ref: RefObject<HTMLElement>,
 	cb: () => void,
 ): void => {
 	useEffect(() => {
