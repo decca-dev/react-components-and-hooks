@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/indent */
 import Link from 'next/link';
 import { ReactNode, useEffect, useRef, useState } from 'react';
-import { useOutsideAlerter } from '../lib/hooks/useOutsideAlerter';
+import { useOutsideAlerter } from '../hooks/useOutsideAlerter';
 
 export interface IDropdownItem {
 	text: string;
@@ -28,7 +29,9 @@ const Dropdown = ({
 }: DropdownProps): JSX.Element => {
 	const dropdownRef = useRef<HTMLDivElement>(null);
 	const [isVisible, setIsVisible] = useState(false);
-	const toggleVisibility = (): void => setIsVisible(!isVisible);
+	const toggleVisibility = (): void => {
+		setIsVisible(!isVisible);
+	};
 	useOutsideAlerter(dropdownRef, () => setIsVisible(false));
 
 	useEffect(() => {
@@ -52,19 +55,23 @@ const Dropdown = ({
 
 	return (
 		<div
-			className={`relative z-10 ${direction === 'right'
-				? 'flex flex-row'
-				: direction === 'left'
+			className={`relative z-10 ${
+				direction === 'right'
+					? 'flex flex-row'
+					: direction === 'left'
 					? 'flex flex-row-reverse'
 					: direction === 'bottom'
-						? 'relative inline-block'
-						: ''}`}
+					? 'relative inline-block'
+					: ''
+			}`}
 			ref={dropdownRef}
 		>
 			<button onClick={toggleVisibility}>{children}</button>
 			{isVisible && (
 				<div
-					className={`${newSpace ? 'relative' : 'absolute'} ${tw} flex flex-col rounded-md drop-shadow-lg child-xl cursor-pointer`}
+					className={`${
+						newSpace ? 'relative' : 'absolute'
+					} ${tw} flex flex-col rounded-md drop-shadow-lg child-xl cursor-pointer min-w-full`}
 				>
 					{items.map((item, i) => {
 						return (
@@ -87,15 +94,16 @@ const DropdownItem = ({ text, href, tw, cb }: IDropdownItem): JSX.Element => {
 	return (
 		<>
 			<div
-				className={`${tw} py-2 w-auto flex flex-wrap pl-2 border-gray-200 border-b-2 bg-white text-black`}
+				className={`${tw} py-2 flex flex-wrap pl-2 border-gray-200 border-b-2 bg-white text-black hover:underline`}
 				onClick={
 					href
 						? (): string => (window.location.href = href)
 						: typeof cb !== 'undefined'
-							? (): void => cb()
-							: (): boolean => {
+						? (): void => cb()
+						: (): boolean => {
 								return false;
-							}
+								// eslint-disable-next-line no-mixed-spaces-and-tabs
+						  }
 				}
 			>
 				{typeof href !== 'undefined' && <Link href={href!}>{text}</Link>}
